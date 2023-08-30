@@ -1,10 +1,13 @@
 import { useState } from "react"
+import Modal from "./components/Modal"
 
 const App = () => {
   const [images, setImages] = useState(null)
   const [value, setValue] = useState(null)
   const [error, setError] = useState(null)
   const [selectedImage, setSelectedImage] = useState(null)
+  const [modalOpen, setModalOpen] = useState(false)
+
   const supriseOptions = [
     'A blue ostrich eating melon',
     'A matisse style shark on the telephone',
@@ -46,6 +49,7 @@ const App = () => {
     console.log(e.target.files[0])
     const formData = new FormData()
     formData.append('file', e.target.files[0])
+    setModalOpen(true)
     setSelectedImage(e.target.files[0])
 
     try {
@@ -84,6 +88,9 @@ const App = () => {
             to edit.
         </p>
         {error && <p>{error}</p>}
+        {modalOpen && <div className="overlay">
+          <Modal setModalOpen={setModalOpen} setSelectedImage={setSelectedImage} selectedImage={selectedImage}/>
+        </div>}
       </section>
       <section className="image-section">
         {images?.map((image, _index) => (
