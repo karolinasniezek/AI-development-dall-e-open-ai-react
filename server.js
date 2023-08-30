@@ -17,7 +17,7 @@ async function main() {
       });
 
     const image = await openai.images.generate({ 
-        prompt: "A cute baby sea otter",
+        prompt: req.body.message,
         n: 2,
         size: "1024x1024"
      });
