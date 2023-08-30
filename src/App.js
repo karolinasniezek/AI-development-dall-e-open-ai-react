@@ -3,7 +3,8 @@ import { useState } from "react"
 const App = () => {
   const [images, setImages] = useState(null)
   const [value, setValue] = useState(null)
-
+  const [error, setError] = useState(null)
+  const [selectedImage, setSelectedImage] = useState(null)
   const supriseOptions = [
     'A blue ostrich eating melon',
     'A matisse style shark on the telephone',
@@ -11,11 +12,17 @@ const App = () => {
   ]
 
   const surpriseMe = () => {
+    setImages(null)
     const randomValue = supriseOptions[Math.floor(Math.random() * supriseOptions.length)]
     setValue(randomValue)
   }
 
   const getImages = async () => {
+    setImages(null)
+    if (value === null) {
+      setError('Error! Must have a search term')
+      return
+    }
     try {
       const options = {
         method: 'POST',
@@ -35,7 +42,24 @@ const App = () => {
     }
   }
 
-  console.log(value)
+  const uploadImage = async (e) => {
+    console.log(e.target.files[0])
+    const formData = new FormData()
+    formData.append('file', e.target.files[0])
+    setSelectedImage(e.target.files[0])
+
+    try {
+      const options = {
+        method: 'POST',
+        body: formData
+      }
+      const response = await fetch('http://localhost:8000/upload', options)
+      const data = await response.json()
+      console.log(data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <div className="App">
@@ -52,6 +76,14 @@ const App = () => {
           />
           <button onClick={getImages}>Generate</button>
         </div>
+        <p className="extra-info">Or, 
+          <span>
+            <label htmlFor="files"> upload an image </label>
+            <input onChange={uploadImage} id="files" accept="image/*" type="file" hidden/>
+          </span>
+            to edit.
+        </p>
+        {error && <p>{error}</p>}
       </section>
       <section className="image-section">
         {images?.map((image, _index) => (
