@@ -51,6 +51,7 @@ const App = () => {
     formData.append('file', e.target.files[0])
     setModalOpen(true)
     setSelectedImage(e.target.files[0])
+    e.target.value = null
 
     try {
       const options = {
@@ -61,6 +62,29 @@ const App = () => {
       const data = await response.json()
       console.log(data)
     } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const generateVariations = async () => {
+    setImages(null)
+    if (selectedImage === null){
+      setError('Error! Must have an existing image')
+      setModalOpen(false)
+      return
+    }
+    try {
+      const options = {
+        method: 'POST'
+
+      }
+      const response = await fetch('http://localhost:8000/variations', options)
+      const data = await response.json()
+      console.log(data)
+      setImages(data)
+      setError(null)
+      setModalOpen(false)
+    } catch(error) {
       console.error(error)
     }
   }
@@ -89,7 +113,12 @@ const App = () => {
         </p>
         {error && <p>{error}</p>}
         {modalOpen && <div className="overlay">
-          <Modal setModalOpen={setModalOpen} setSelectedImage={setSelectedImage} selectedImage={selectedImage}/>
+          <Modal 
+            setModalOpen={setModalOpen} 
+            setSelectedImage={setSelectedImage} 
+            selectedImage={selectedImage} 
+            generateVariations={generateVariations}
+          />
         </div>}
       </section>
       <section className="image-section">
