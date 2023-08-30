@@ -1,4 +1,4 @@
-# AI development Image Variations App in React and Node.js | OpenAI API
+# AI development Image Variations Dall-e App in React and Node.js | OpenAI API
 
 ## Available Scripts
 
